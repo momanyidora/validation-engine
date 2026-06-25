@@ -1,10 +1,28 @@
-import { url } from "../src/validators/url";
+import { describe, it, expect } from "vitest";
+import { url } from "../src/validators/url.js";
 
-console.log(url("https://example.com"));
-console.log(url("http://example.com"));
+describe("url validator", () => {
+  it("accepts https URL", () => {
+    expect(url("https://example.com").valid).toBe(true);
+  });
 
-console.log(url("example.com"));
-console.log(url("hello"));
-console.log(url("htp://wrong.com"));
-console.log(url(""));
-console.log(url(null));
+  it("accepts http URL", () => {
+    expect(url("http://example.com").valid).toBe(true);
+  });
+
+  it("fails URL without protocol", () => {
+    expect(url("example.com").valid).toBe(false);
+  });
+
+  it("fails random string", () => {
+    expect(url("hello").valid).toBe(false);
+  });
+
+  it("fails malformed URL", () => {
+    expect(url("https://").valid).toBe(false);
+  });
+
+  it("fails null", () => {
+    expect(url(null).valid).toBe(false);
+  });
+});

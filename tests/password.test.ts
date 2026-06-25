@@ -1,11 +1,28 @@
-import { password } from "../src/validators/password";
+import { describe, it, expect } from "vitest";
+import { password } from "../src/validators/password.js";
 
-console.log(password("Password1!"));
-console.log(password("StrongPass9#"));
+describe("password validator", () => {
+  it("accepts strong password", () => {
+    expect(password("Password1!").valid).toBe(true);
+  });
 
-console.log(password("pass"));
-console.log(password("password"));
-console.log(password("Password"));
-console.log(password("Password1"));
-console.log(password(""));
-console.log(password(null));
+  it("fails if less than 8 characters", () => {
+    expect(password("Pass1!").valid).toBe(false);
+  });
+
+  it("fails without uppercase", () => {
+    expect(password("password1!").valid).toBe(false);
+  });
+
+  it("fails without digit", () => {
+    expect(password("Password!").valid).toBe(false);
+  });
+
+  it("fails without special character", () => {
+    expect(password("Password1").valid).toBe(false);
+  });
+
+  it("fails completely weak password", () => {
+    expect(password("abc").valid).toBe(false);
+  });
+});
