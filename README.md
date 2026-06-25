@@ -83,7 +83,7 @@ Checks if a value is a valid email address.
 Checks if a value follows E.164 format.
 
 Example:   
-+254712345678
++254745577878
 
 
 ### url
