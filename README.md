@@ -2,82 +2,63 @@
 
 ## What This Library Does
 
-This project is a reusable input validation library built with TypeScript.
+This project is a reusable validation library built with TypeScript.
 
-The goal of the library is to help developers validate user input in a consistent way without rewriting validation logic in every project.
+The goal is to make input validation easier and avoid rewriting the same validation logic in different projects.
 
-Instead of returning only `true` or `false`, the library returns structured validation results that explain:
+Instead of returning only `true` or `false`, the library returns a structured result showing:
 
-* Whether validation passed
-* Which rule failed
-* Why validation failed
-* Error codes that can be used by applications
+ If validation passed
+ Which rule failed
+ Why it failed
 
-The library supports multiple validation rules and allows them to be combined together.
+Supported validators:
+
+ required
+ email
+ phoneNumber
+ url
+ date
+ uuid
+ password
 
 ---
 
 ## Installation
 
-Clone the project:
-
-  bash
-git clone <repository-url>
-cd validation-engine
-  
-
-Install dependencies:
-
-  bash
+bash
 npm install
-  
+
 
 ---
 
 ## Running Tests
 
-Run individual test files:
-
-  bash
-tsx tests/required.test.ts
-tsx tests/email.test.ts
-tsx tests/phone.test.ts
-tsx tests/url.test.ts
-tsx tests/date.test.ts
-tsx tests/uuid.test.ts
-tsx tests/password.test.ts
-tsx tests/validate.test.ts
-  
-
 Run TypeScript checks:
 
-  bash
-npx tsc --noEmi
+bash
+npx tsc --noEmit
+
+
+Run Vitest:
+
+bash
+npm test
+
 
 ---
 
 ## Basic Usage
 
-Import the validators and validation engine:ts
-import { validate, required, email } from "./src"
 
-Validate a value:
+import { validate, required, email } from "./src";
 
+const result = validate(
+  "student@example.com",
+  [required, email]
+);
 
-const result = validate("student@example.com", [
-  required,
-  email,
-]);
-
-console.log(result)
-
-Output:
-
-
-{
-  valid: true,
-  value: "student@example.com",
-  errors: []
+console.log(result);
 
 
 ---
@@ -86,108 +67,56 @@ Output:
 
 ### required
 
-Checks that a value exists.
+Fails for:
 
-Fails when:
-
-* null
-* undefined
-* empty string
-* whitespace-only string
-
-Example:
-
-
-required(""
-
----
+ null
+ undefined
+ empty strings
+ whitespace-only strings
 
 ### email
 
-Checks whether a value is a valid email address.
-
-Example:
-
-
-email("student@example.com"
-
----
+Checks if a value is a valid email address.
 
 ### phoneNumber
 
-Validates phone numbers using the E.164 format.
+Checks if a value follows E.164 format.
 
-Example:
+Example:   
++254712345678
 
-
-phoneNumber("+254712345678"
-
----
 
 ### url
 
-Validates URLs using the built-in URL parser.
-
-Supported protocols:
-
-* http://
-* https://
-
-Example:
-
-
-url("https://example.com"
-
----
+Checks if a value is a valid HTTP or HTTPS URL.
 
 ### date
 
-Validates ISO 8601 dates.
+Checks ISO 8601 dates.
 
-Supported formats:txt
+Supported formats:   
 YYYY-MM-DD
-YYYY-MM-DDTHH:mm:ss
+YYYY-MM-DDTHH:mm:ssZ
 
-Examples:
-
-
-date("2026-06-19")
-date("2026-06-19T10:30:00Z"
-
----
 
 ### uuid
 
-Validates UUID values.
-
-Example:
-
-
-uuid("550e8400-e29b-41d4-a716-446655440000"
-
----
+Checks if a value is a valid UUID.
 
 ### password
 
-Checks password strength.
+Password requirements:
 
-Requirements:
-
-* Minimum 8 characters
-* At least 1 uppercase letter
-* At least 1 digit
-* At least 1 special character
-
-Example:
-
-
-password("Password1!"
+ At least 8 characters
+ At least 1 uppercase letter
+ At least 1 digit
+ At least 1 special character
 
 ---
 
 ## Validation Result Format
 
-Successful validation:
+Success:
 
 
 {
@@ -197,7 +126,7 @@ Successful validation:
 }
 
 
-Failed validation:
+Failure:
 
 
 {
@@ -213,180 +142,76 @@ Failed validation:
 }
 
 
-### Fields
-
-| Field  | Description                         |
-|         |                                    |
-| valid  | Indicates whether validation passed |
-| value  | Original value that was validated   |
-| errors | Array of validation errors          |
-
-Each error contains:
-
-
-{
-  rule: string;
-  message: string;
-  code: string;
-}
-
-
 ---
 
 ## Using Multiple Rules
 
-Multiple validators can be applied to a single value.
 
-Example:
-
-ts
-validate("student@example.com", [
-  required,
-  email
-]);
+validate(
+  "student@example.com",
+  [required, email]
+);
 
 
-Example with multiple failures:
-
-ts
-validate("", [
-  required,
-  email
-]);
-
-
-Output:
-
-ts
-{
-  valid: false,
-  value: "",
-  errors: [
-    {
-      rule: "required",
-      message: "Value is required",
-      code: "REQUIRED"
-    },
-    {
-      rule: "isEmail",
-      message: "Value must be a valid email address",
-      code: "INVALID_EMAIL"
-    }
-  ]
-}
-
+If more than one rule fails, all errors are returned.
 
 ---
 
 ## Using Coercion
 
-Coercion has not yet been implemented in this sprint.
 
-The planned API is:
+validate(
+  "  STUDENT@EXAMPLE.COM  ",
+  [email],
+  { coerce: true }
+);
 
 
-validate(value, validators, {
-  coerce: true
-})
+When coercion is enabled:
 
----
+ Leading and trailing spaces are removed
+ Email addresses are converted to lowercase
 
-## Coercion Decisions
-
-Planned coercion behavior:
-
-### Trim whitespace
-
-Example:
-"  student@example.com  
-
-Becomes:
-"student@example.com
-
-### Lowercase email addresses
-
-Example:
-"STUDENT@EXAMPLE.COM
-
-Becomes:ts
-"student@example.com
-
-Coercion will be optional because developers may want to keep the original input unchanged.
-
+Example:   
+"  STUDENT@EXAMPLE.COM  "
+become:   
+"student@example.com"
 ---
 
 ## Examples
 
-### Validate an Emailts
-validate("student@example.com", [
-  email
-])
-
-### Validate a Required Emailts
-validate("student@example.com", [
-  required,
-  email
-])
-
-### Validate a Strong Passwordts
-validate("Password1!", [
-  password
-]);
-  
-
-### Validate a Phone Number
+Validate an email:
 
 
-validate("+2547454554478", [
-  phoneNumber
-]);
+validate("student@example.com", [email]);
+
+
+Validate a required email:
+
+
+validate(
+  "student@example.com",
+  [required, email]
+);
+
+
+Validate a strong password:
+
+
+validate(
+  "Password1!",
+  [password]
+);
 
 
 ---
 
-## Known Limitations
+## Limitations
 
- Email validation uses regular expressions and does not cover every valid email format.
-    URL validation currently supports only HTTP and HTTPS protocols.
-       UUID validation focuses on standard UUID formats.
-       Coercion support has not yet been implemented.
-       The library currently validates values only and does not transform them.
-
----
-
-## Project Structure
-
-  txt
-validation-engine/
-│
-├── src/
-│   ├── validators/
-│   │   ├── required.ts
-│   │   ├── email.ts
-│   │   ├── phoneNumber.ts
-│   │   ├── url.ts
-│   │   ├── date.ts
-│   │   ├── uuid.ts
-│   │   └── password.ts
-│   │
-│   ├── validate.ts
-│   ├── types.ts
-│   └── index.ts
-│
-├── tests/
-│
-├── README.md
-└── package.json
+ Email validation uses regex and may not cover every valid email format.
+ Only HTTP and HTTPS URLs are supported.
+ UUID validation supports standard UUID formats only.
+ The library focuses on validation and simple coercion.
 
 
-## Why I Chose Structured Validation Results
 
-I chose to return structured objects instead of booleans because applications usually need more information than simply knowing whether validation passed.
-
-For example, a registration form needs to know:
-
-   -Which validation rule failed
-   -Why it failed
-   -Which error message should be shown to the user
-
-Returning structured results makes the library easier to reuse in real-world applications.
