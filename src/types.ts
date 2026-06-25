@@ -1,10 +1,14 @@
-export interface ValidationError{
-    rule: string;
-    message: string;
-    code: string;
+export interface ValidationError {
+  rule: string;
+  message: string;
+  code: string;
 }
-export interface ValidatorResult{
-valid: boolean;
-error: ValidationError | null;
+export interface ValidationOptions {
+  coerce?: boolean;
 }
-export type validator = (value: any) => ValidatorResult;
+export interface ValidatorResult {
+  valid: boolean;
+  error: ValidationError | null;
+}
+
+export type Validator = (value: any) => ValidatorResult;
