@@ -1,6 +1,7 @@
 import type { ValidatorResult } from "../types";
 
 export function email(value: any): ValidatorResult {
+  // ensuring input is string before checking email requirements if its not reject
   if (typeof value !== "string") {
     return {
       valid: false,
@@ -13,6 +14,7 @@ export function email(value: any): ValidatorResult {
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // ensure that email has @At-sign
   if (!emailRegex.test(value)) {
     return {
       valid: false,
@@ -24,6 +26,7 @@ export function email(value: any): ValidatorResult {
     };
   }
 
+  // return success when email is valid and parseable
   return {
     valid: true,
     error: null,

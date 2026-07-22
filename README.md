@@ -8,19 +8,19 @@ The goal is to make input validation easier and avoid rewriting the same validat
 
 Instead of returning only `true` or `false`, the library returns a structured result showing:
 
- If validation passed
- Which rule failed
- Why it failed
+If validation passed
+Which rule failed
+Why it failed
 
 Supported validators:
 
- required
- email
- phoneNumber
- url
- date
- uuid
- password
+required
+email
+phoneNumber
+url
+date
+uuid
+password
 
 ---
 
@@ -28,7 +28,6 @@ Supported validators:
 
 bash
 npm install
-
 
 ---
 
@@ -39,27 +38,23 @@ Run TypeScript checks:
 bash
 npx tsc --noEmit
 
-
 Run Vitest:
 
 bash
 npm test
 
-
 ---
 
 ## Basic Usage
 
-
 import { validate, required, email } from "./src";
 
 const result = validate(
-  "student@example.com",
-  [required, email]
+"student@example.com",
+[required, email]
 );
 
 console.log(result);
-
 
 ---
 
@@ -69,10 +64,10 @@ console.log(result);
 
 Fails for:
 
- null
- undefined
- empty strings
- whitespace-only strings
+null
+undefined
+empty strings
+whitespace-only strings
 
 ### email
 
@@ -82,9 +77,8 @@ Checks if a value is a valid email address.
 
 Checks if a value follows E.164 format.
 
-Example:   
+Example:  
 +254745577878
-
 
 ### url
 
@@ -94,10 +88,9 @@ Checks if a value is a valid HTTP or HTTPS URL.
 
 Checks ISO 8601 dates.
 
-Supported formats:   
+Supported formats:  
 YYYY-MM-DD
 YYYY-MM-DDTHH:mm:ssZ
-
 
 ### uuid
 
@@ -107,10 +100,10 @@ Checks if a value is a valid UUID.
 
 Password requirements:
 
- At least 8 characters
- At least 1 uppercase letter
- At least 1 digit
- At least 1 special character
+At least 8 characters
+At least 1 uppercase letter
+At least 1 digit
+At least 1 special character
 
 ---
 
@@ -118,40 +111,34 @@ Password requirements:
 
 Success:
 
-
 {
-  valid: true,
-  value: "student@example.com",
-  errors: []
+valid: true,
+value: "student@example.com",
+errors: []
 }
-
 
 Failure:
 
-
 {
-  valid: false,
-  value: "bad-email",
-  errors: [
-    {
-      rule: "isEmail",
-      message: "Value must be a valid email address",
-      code: "INVALID_EMAIL"
-    }
-  ]
+valid: false,
+value: "bad-email",
+errors: [
+{
+rule: "isEmail",
+message: "Value must be a valid email address",
+code: "INVALID_EMAIL"
 }
-
+]
+}
 
 ---
 
 ## Using Multiple Rules
 
-
 validate(
-  "student@example.com",
-  [required, email]
+"student@example.com",
+[required, email]
 );
-
 
 If more than one rule fails, all errors are returned.
 
@@ -159,59 +146,46 @@ If more than one rule fails, all errors are returned.
 
 ## Using Coercion
 
+Coercion is off by default. To use coercion, you must explicitly opt in by setting { coerce: true }.
 
-validate(
-  "  STUDENT@EXAMPLE.COM  ",
-  [email],
-  { coerce: true }
-);
-
+### What It Does
 
 When coercion is enabled:
+Leading and trailing spaces are removed
+Email addresses are converted to lowercase
 
- Leading and trailing spaces are removed
- Email addresses are converted to lowercase
+### Example:
 
-Example:   
-"  STUDENT@EXAMPLE.COM  "
-become:   
+" STUDENT@EXAMPLE.COM "
+becomes:
 "student@example.com"
----
+Coercion does not change spaces inside a value. For example, spaces between words are preserved.
 
 ## Examples
 
 Validate an email:
 
-
 validate("student@example.com", [email]);
-
 
 Validate a required email:
 
-
 validate(
-  "student@example.com",
-  [required, email]
+"student@example.com",
+[required, email]
 );
-
 
 Validate a strong password:
 
-
 validate(
-  "Password1!",
-  [password]
+"Password1!",
+[password]
 );
-
 
 ---
 
 ## Limitations
 
- Email validation uses regex and may not cover every valid email format.
- Only HTTP and HTTPS URLs are supported.
- UUID validation supports standard UUID formats only.
- The library focuses on validation and simple coercion.
-
-
-
+Email validation uses regex and may not cover every valid email format.
+Only HTTP and HTTPS URLs are supported.
+UUID validation supports standard UUID formats only.
+The library focuses on validation and simple coercion.
