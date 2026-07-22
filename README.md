@@ -159,6 +159,8 @@ Email addresses are converted to lowercase
 " STUDENT@EXAMPLE.COM "
 becomes:
 "student@example.com"
+
+## What it does not do
 Coercion does not change spaces inside a value. For example, spaces between words are preserved.
 
 ## Examples
